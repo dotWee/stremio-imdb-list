@@ -6,7 +6,7 @@
 # ========================================
 # Stage 1: Dependencies
 # ========================================
-FROM node:20-alpine AS dependencies
+FROM node:25-alpine AS dependencies
 
 # Set working directory
 WORKDIR /app
@@ -21,7 +21,7 @@ RUN npm install && \
 # ========================================
 # Stage 2: Production
 # ========================================
-FROM node:20-alpine AS production
+FROM node:25-alpine AS production
 
 # Create a non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
