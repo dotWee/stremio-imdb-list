@@ -5,6 +5,7 @@ on:
     branches: [ "feat/docker" ]
   pull_request:
     branches: [ "feat/docker" ]
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
