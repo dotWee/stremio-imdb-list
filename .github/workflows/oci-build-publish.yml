@@ -2,13 +2,13 @@ name: Build & Publish OCI Container Image
 
 on:
   push:
-    branches: [ "feat/docker" ]
+    branches: [ $default-branch ]
   pull_request:
-    branches: [ "feat/docker" ]
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: ${{ github.repository }} # dotWee/stremio-imdb-list
+  # Use the value of ${{ github.repository }} if you want to use the repository name
+  IMAGE_NAME: dotwee/stremio-imdb-list
   IMAGE_PLATFORMS: "linux/amd64,linux/arm64"
 
 jobs:
@@ -30,8 +30,6 @@ jobs:
       - name: Install cosign
         if: github.event_name != 'pull_request'
         uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad #v4.0.0
-        with:
-          cosign-release: 'v2.2.4'
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -60,11 +58,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Create lowercase version of image name for Docker Hub compatibility
-      # Required since my username is uppercase on GitHub and lowercase on Docker Hub
-      - name: Set lowercase image name
-        run: echo "IMAGE_NAME_LOWERCASE=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
-
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
@@ -72,8 +65,8 @@ jobs:
         uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
         with:
           images: |
-            ghcr.io/${{ env.IMAGE_NAME }}
-            docker.io/${{ env.IMAGE_NAME_LOWERCASE }}
+            ghcr.io/${{ github.repository }}
+            docker.io/${{ env.IMAGE_NAME }}
           flavor: |
             latest=true
           tags: |
@@ -115,11 +108,3 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
-
-      - name: Update Docker Hub repository description
-        uses: peter-evans/dockerhub-description@v5
-        if: ${{ github.event_name != 'pull_request' }}
-        with:
-          username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
-          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-          repository: ${{ env.IMAGE_NAME_LOWERCASE }}

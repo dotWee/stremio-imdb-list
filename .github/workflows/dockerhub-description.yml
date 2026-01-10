@@ -1,0 +1,26 @@
+name: Update Docker Hub Repository Description
+
+on:
+  push:
+    branches: [ $default-branch ]
+    paths:
+      - 'README.md'
+  workflow_dispatch:
+
+env:
+  # Use the value of ${{ github.repository }} if you want to use the repository name
+  IMAGE_NAME: dotwee/stremio-imdb-list
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Update Docker Hub repository description
+        uses: peter-evans/dockerhub-description@v5
+        with:
+          repository: ${{ env.IMAGE_NAME }}
+          username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
