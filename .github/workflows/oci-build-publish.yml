@@ -117,7 +117,7 @@ jobs:
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
 
       - name: Update Docker Hub repository description
-        uses: peter-evans/dockerhub-description@v4
+        uses: peter-evans/dockerhub-description@v5
         if: ${{ github.event_name != 'pull_request' }}
         with:
           username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
