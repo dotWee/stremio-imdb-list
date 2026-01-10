@@ -1,5 +1,10 @@
 # Stremio Add-on to Add an IMDB List as a Catalog
 
+[![workflow status](https://img.shields.io/github/actions/workflow/status/dotWee/stremio-imdb-list/oci-build-publish.yml?logo=GitHub)](https://github.com/dotWee/stremio-imdb-list/actions/workflows/oci-build-publish.yml)
+![github activity](https://img.shields.io/github/last-commit/dotwee/stremio-imdb-list?logo=github)
+![github open issues](https://badgen.net/github/open-issues/dotwee/stremio-imdb-list?icon=github)
+![docker pulls](https://badgen.net/docker/pulls/dotwee/stremio-imdb-list?icon=docker&label=pulls)
+
 This is a simple add-on that uses an ajax call to get a list of items from IMDB, then converts those items to Stremio supported Meta Objects.
 
 ## Using locally
@@ -26,27 +31,15 @@ Use `https://1fe84bc728af-imdb-list.beamup.dev/[imdb-list-id]/manifest.json`. Ad
 
 This application includes a production-ready Dockerfile following Docker best practices. The Dockerfile uses multi-stage builds, runs as a non-root user, and includes security optimizations.
 
-### Prerequisites
-
 - [Docker](https://docs.docker.com/get-docker/) installed on your system
 - [Docker Compose](https://docs.docker.com/compose/install/) (optional, for easier management)
-
-### Building the Docker Image
-
-Build the Docker image from the project root:
-
-```bash
-docker build -t stremio-imdb-list .
-```
-
-This will create a Docker image tagged as `stremio-imdb-list` using the multi-stage build process defined in the `Dockerfile`.
 
 ### Running the Container
 
 Run the containerized application:
 
 ```bash
-docker run -d -p 7515:7515 --name stremio-imdb-list stremio-imdb-list
+docker run -d -p 7515:7515 --name stremio-imdb-list ghcr.io/dotWee/stremio-imdb-list:latest
 ```
 
 The application will be available at `http://localhost:7515/[imdb-list-id]/manifest.json`.
@@ -56,6 +49,16 @@ docker logs -f stremio-imdb-list
 Addon active on port 7515.
 http://127.0.0.1:7515/[imdb-list-id]/manifest.json
 ```
+
+### Building the Docker Image (optionally)
+
+Optionally, build the Docker image from the project root:
+
+```bash
+docker build -t stremio-imdb-list:latest .
+```
+
+This will create a Docker image tagged as `stremio-imdb-list` using the multi-stage build process defined in the `Dockerfile`.
 
 ### Using Docker Compose
 
