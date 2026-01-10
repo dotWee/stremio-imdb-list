@@ -83,6 +83,9 @@ jobs:
           labels: |
             org.opencontainers.image.source="${{ github.repositoryUrl }}"
             org.opencontainers.image.vendor="${{ github.repository_owner }}"
+            org.opencontainers.image.description="${{ github.repository.description }}"
+            org.opencontainers.image.url="${{ github.repository.url }}"
+            org.opencontainers.image.authors="${{ github.repository_owner }}"
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
