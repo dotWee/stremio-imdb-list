@@ -1,0 +1,36 @@
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: stremio-imdb-list
+    ports:
+      - "7515:7515"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('net').createConnection(7515, 'localhost', () => process.exit(0)).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    # Optional: Set memory and CPU limits
+    #deploy:
+    #  resources:
+    #    limits:
+    #      memory: 512M
+    #      cpus: '0.5'
+    #    reservations:
+    #      memory: 128M
+    #      cpus: '0.25'
+    develop:
+      watch:
+        - action: sync
+          path: ./server.js
+          target: /app/server.js
+        - action: sync
+          path: ./index.js
+          target: /app/index.js
+        - action: rebuild
+          path: ./package.json

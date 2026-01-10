@@ -1,26 +1,70 @@
 # Stremio Add-on to Add an IMDB List as a Catalog
 
-This is a simple add-on that uses an ajax call to get a list of items from IMDB, then converts those items to Stremio supported Meta Objects.
+[![workflow status](https://img.shields.io/github/actions/workflow/status/dotWee/stremio-imdb-list/oci-build-publish.yml?logo=GitHub)](https://github.com/dotWee/stremio-imdb-list/actions/workflows/oci-build-publish.yml)
+![github activity](https://img.shields.io/github/last-commit/dotwee/stremio-imdb-list?logo=github)
+![github open issues](https://badgen.net/github/open-issues/dotwee/stremio-imdb-list?icon=github)
+![docker pulls](https://badgen.net/docker/pulls/dotwee/stremio-imdb-list?icon=docker&label=pulls)
 
+This is a simple add-on that uses an ajax call to get a list of items from IMDB, then converts those items to Stremio supported Meta Objects.
 
 ## Using locally
 
-**Pre-requisites: Node.js, Git**
+### Prerequisites
 
-```
-git clone https://github.com/jaruba/stremio-imdb-list.git
+- Node.js
+- Git
+
+```bash
+git clone https://github.com/dotWee/stremio-imdb-list.git
 cd stremio-imdb-list
 npm i
 npm start
 ```
 
-This will print `http://127.0.0.1:7515/[imdb-list-id]/manifest.json`. Add a IMDB list id instead of `[imdb-list-id]` in this URL and [load the add-on in Stremio](https://github.com/jaruba/stremio-imdb-list#6-install-add-on-in-stremio).
-
+This will print `http://127.0.0.1:7515/[imdb-list-id]/manifest.json`. Add a IMDB list id instead of `[imdb-list-id]` in this URL and [load the add-on in Stremio](https://github.com/dotWee/stremio-imdb-list#6-install-add-on-in-stremio).
 
 ## Using remotely
 
-Use `https://1fe84bc728af-imdb-list.beamup.dev/[imdb-list-id]/manifest.json`. Add a IMDB list id instead of `[imdb-list-id]` in this URL and [load the add-on in Stremio](https://github.com/jaruba/stremio-imdb-list#6-install-add-on-in-stremio).
+Use `https://1fe84bc728af-imdb-list.beamup.dev/[imdb-list-id]/manifest.json`. Add a IMDB list id instead of `[imdb-list-id]` in this URL and [load the add-on in Stremio](https://github.com/dotWee/stremio-imdb-list#6-install-add-on-in-stremio).
 
+## Using with Docker
+
+This application includes a production-ready Dockerfile following Docker best practices. The Dockerfile uses multi-stage builds, runs as a non-root user, and includes security optimizations.
+
+- [Docker](https://docs.docker.com/get-docker/) installed on your system
+- [Docker Compose](https://docs.docker.com/compose/install/) (optional, for easier management)
+
+### Running the Container
+
+Run the containerized application:
+
+```bash
+docker run -d -p 7515:7515 --name stremio-imdb-list ghcr.io/dotWee/stremio-imdb-list:latest
+```
+
+The application will be available at `http://localhost:7515/[imdb-list-id]/manifest.json`.
+
+```bash
+docker logs -f stremio-imdb-list
+Addon active on port 7515.
+http://127.0.0.1:7515/[imdb-list-id]/manifest.json
+```
+
+### Building the Docker Image (optionally)
+
+Optionally, build the Docker image from the project root:
+
+```bash
+docker build -t stremio-imdb-list:latest .
+```
+
+This will create a Docker image tagged as `stremio-imdb-list` using the multi-stage build process defined in the `Dockerfile`.
+
+### Using Docker Compose
+
+For easier management, you can use Docker Compose.
+
+See the [`compose.yml`](compose.yml) file and use it to start the container.
 
 ## What is a IMDB List ID
 
@@ -265,7 +309,7 @@ app.get('/:listId/catalog/:type/:id.json', (req, res) => {
       if (done) {
         const userData = cache[req.params.type][req.params.listId]
         respond(JSON.stringify({ metas: userData }))
-      } else 
+      } else
         fail(err || 'Could not get list items')
     })
   }
